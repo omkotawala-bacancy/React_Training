@@ -3,6 +3,11 @@ import LoginPage from "../pages/LoginPage";
 import Layout from '../Layout.jsx'
 import HomePage from '../pages/HomePage.jsx'
 import AboutPage from '../pages/AboutPage.jsx'
+import ProtectedRoute from "./ProtectedRoute.jsx";
+import RoleRoute from "./RoleRoute.jsx";
+import Unauthorized from "../pages/Unauthorized.jsx";
+import AdminPage from "../pages/AdminPage.jsx";
+import DashboardPage from "../pages/DashboardPage.jsx";
 
 const router = createBrowserRouter([
 
@@ -21,8 +26,30 @@ const router = createBrowserRouter([
       {
         path: 'login',
         element: <LoginPage />
+      },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: '/dashboard',
+            element: <DashboardPage />
+          }
+        ]
+      },
+      {
+        element: <RoleRoute allowedRoles={['admin']} />,
+        children: [
+          {
+            path: '/admin',
+            element: <AdminPage />
+          }
+        ]
       }
     ]
+  },
+  {
+    path: '*',
+    element: <Unauthorized />
   }
 ])
 

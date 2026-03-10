@@ -1,7 +1,9 @@
-function AdminPage(){
-    return (
-        <h1>Admin Page</h1>
-    )
+import React from 'react'
+
+function AdminPage() {
+  return (
+    <div>AdminPage</div>
+  )
 }
 
-export default AdminPage;
+export default AdminPage
