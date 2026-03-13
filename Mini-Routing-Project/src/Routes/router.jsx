@@ -8,6 +8,7 @@ import RoleRoute from "./RoleRoute.jsx";
 import Unauthorized from "../pages/Unauthorized.jsx";
 import AdminPage from "../pages/AdminPage.jsx";
 import DashboardPage from "../pages/DashboardPage.jsx";
+import { ProtectedDashboard } from "../pages/ProtectedDashboard.jsx";
 
 const router = createBrowserRouter([
 
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
         children: [
           {
             path: '/dashboard',
-            element: <DashboardPage />
+            element: <ProtectedDashboard />
           }
         ]
       },
