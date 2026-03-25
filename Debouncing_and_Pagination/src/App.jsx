@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import { useEffect } from 'react'
-import Information from './components/Information'
+import HomePage from './components/HomePage'
 import { useFetch } from './hooks/useFetch';
+import Navbar from './components/NavBar';
+import { useNav } from './hooks/useNav';
 
 function App() {
 
-  const [search, setSearch] = useState('')
+  const { search, sortBy, category, type, } = useNav()
+
   const [currentPage, setCurrentPage] = useState(1);
-  const [category, setCategory] = useState('');
-  const [sortBy, setSortBy] = useState('')
-  const [type, setType] = useState('asc')
   const baseURL = `https://dummyjson.com/products`
-  const limit = 10;
+  const limit = 20;
 
   const searchUrl = search.length > 0 ? `/search?q=${search}&` : `?`;
   const paginationUrl = `limit=${limit}&skip=${(currentPage - 1) * limit}`
@@ -25,11 +25,9 @@ function App() {
 
 
   const { data, loading, error } = useFetch(url);
-  const { data: categoriesData } = useFetch("https://dummyjson.com/products/category-list");
 
   const productData = data?.products || [];
   const totalPages = data ? Math.ceil(data.total / limit) : 1;
-  const categories = categoriesData || [];
 
   useEffect(() => {
     setCurrentPage(1)
@@ -47,42 +45,18 @@ function App() {
     }
   }
 
-  function handleCategory(e) {
-    setCategory(e.target.value)
-    console.log(category)
-  }
-
-  function handleType(e) {
-    setType(e.target.value.split('-')[1])
-    setSortBy(e.target.value.split('-')[0])
-  }
-
   return (
-    <>
-      <div>
-        <label htmlFor="category">Select the category for Sorting : </label>
-        <select name="category select" id="category" onChange={handleCategory}>
-          {
-            categories.map(cat => (
-              <option key={Math.random() * 100000000} value={cat}>{cat}</option>
-            ))
-          }
-        </select>
+    <div style={{margin: '0px', padding: '0px'}}>
 
-        <label htmlFor="type" style={{ marginLeft: "20px" }}>Select the type for the sorting: </label>
-        <select onChange={handleType}>
-          <option value="price-asc">Ascending by Price</option>
-          <option value="price-desc">Descending by Price</option>
-          <option value="rating-asc">Ascending by Rating</option>
-          <option value="rating-desc">Descending by Rating</option>
-        </select>
+      <Navbar />
+
+      <div >
+        <HomePage productData={productData} />
+
+        <button onClick={handlePrevious} disabled={currentPage === 1}>Prev</button>
+        <button onClick={handleNext} disabled={currentPage === totalPages}>Next</button>
       </div>
-
-      <Information productData={productData} setSearch={setSearch} />
-
-      <button onClick={handlePrevious} disabled={currentPage === 1}>Prev</button>
-      <button onClick={handleNext} disabled={currentPage === totalPages}>Next</button>
-    </>
+    </div>
   )
 }
 

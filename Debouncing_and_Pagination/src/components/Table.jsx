@@ -10,7 +10,7 @@ function Table(props) {
     return (
         <div>
 
-            <table border='1px solid black' style={{margin: '15px auto'}}>
+            <table border='1px solid white' style={{margin: '15px auto'}}>
                 <tbody>
                     <tr>
                         <td>Thumbnail</td>
@@ -30,7 +30,7 @@ function Table(props) {
                     </tr>
                     <tr>
                         <td>Rating</td>
-                        <td>{product.stock}</td>
+                        <td>{product.rating}</td>
                     </tr>
                     <tr>
                         <td>Stock</td>

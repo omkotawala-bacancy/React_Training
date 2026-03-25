@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { CartContext } from "./CartContext"
 
 
-export const CartProvider = ({children}) => {
+export const CartProvider = ({ children }) => {
 
     const [cart, setCart] = useState(() => {
         const cartData = localStorage.getItem('cart')
@@ -31,17 +31,17 @@ export const CartProvider = ({children}) => {
     }
 
     return (
-          <CartContext.Provider
-          value={{
-            cart,
-            setCart,
-            handleAdd,
-            handleClearCart,
-            handleRemove,
-            totalProducts,
-            totalPrice
-          }}>
+        <CartContext.Provider
+            value={{
+                cart,
+                setCart,
+                handleAdd,
+                handleClearCart,
+                handleRemove,
+                totalProducts,
+                totalPrice
+            }}>
             {children}
-          </CartContext.Provider>
+        </CartContext.Provider>
     )
 }
