@@ -1,5 +1,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import Tasks from './components/Tasks'
+import PendingTask from './components/PendingTask';
+import CompletedTask from './components/CompletedTask';
+import { useMemo } from 'react';
 
 function App() {
 
@@ -9,13 +12,12 @@ function App() {
   });
 
   const [input, setInput] = useState('')
-  const [completed, setCompleted] = useState(false)
 
   // const DebouncedInput = useDebouncing(input, 500)
 
-  const handleChange = useCallback((e) => {
+  const handleChange = (e) => {
     setInput(e.target.value)
-  }, [])
+  }
 
 
   const handleAdd = useCallback(() => {
@@ -44,34 +46,47 @@ function App() {
     localStorage.removeItem('tasks')
   }, [])
 
-  const handleCompletedTask = useCallback(() => {
-    setCompleted(prev => prev = !prev)
-  }, [])
+  const pendingTasks = useMemo(() => {
+    return data ?
+      data.filter(task => (task.isCompleted === false)):
+      []
+  }, [data])
+
+  const completedTask = useMemo(() => {
+    return data ?
+      data.filter(task => (task.isCompleted === true)):
+      []
+  }, [data])
 
   return (
-    <>
-      <div>
+    <div className="todo-app">
+      <header className="todo-header">
+        <h1>Todo Light Theme</h1>
+        <p className="todo-subtitle">Easy, clean, and responsive task manager</p>
+      </header>
 
-        <label htmlFor="input">Enter the task title : </label>
-        <input
-          type="text"
-          value={input}
-          onChange={handleChange}
-          placeholder='Enter the task'
-        />
+      <section className="todo-input-section">
+        <label htmlFor="input">Enter the task title</label>
+        <div className="todo-input-row">
+          <input
+            id="input"
+            type="text"
+            value={input}
+            onChange={handleChange}
+            placeholder="Add a new task..."
+            className="todo-input"
+          />
 
-        <button onClick={handleAdd} style={{marginLeft: '20px'}}>Add the Task</button>
+          <button className="btn btn-primary" onClick={handleAdd}>Add Task</button>
+          <button className="btn btn-secondary" onClick={handleClear}>Clear All</button>
+        </div>
+      </section>
 
-        <button onClick={handleClear} style={{marginLeft: '40px'}}>Clear All Tasks</button>
-
-        <button onClick={handleCompletedTask} style={{marginLeft: '40px'}}>Show completed Tasks</button>
-
+      <div className="todo-columns">
+        <PendingTask data={pendingTasks} setData={setData} />
+        <CompletedTask data={completedTask} setData={setData} />
       </div>
-
-      <div>
-        <Tasks data={completed ? data.filter(task => (task.isCompleted === true)): data} setData={setData}/>
-      </div>
-    </>
+    </div>
   )
 }
 

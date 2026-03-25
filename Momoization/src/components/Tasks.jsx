@@ -1,11 +1,12 @@
 import React from 'react'
+import { useCallback } from 'react';
 
 function Tasks(props) {
 
     const tasks = props.data;
     const setData = props.setData
 
-    function handleComplete(id) {
+    const handleComplete = useCallback((id) => {
         setData(prev => (
             prev.map(task => (
                 task.id === id ? 
@@ -13,35 +14,45 @@ function Tasks(props) {
                     task
             ))
         ))
-    }
+    }, [])
+
+    const handleDelete = useCallback((id) => {
+
+        setData(prev => prev.filter(task => task.id !== id))
+    }, [])
+
+    const handleNotCompleted = useCallback((id) => {
+        setData(prev => prev.map(task => {
+            return task.id === id ? 
+                {...task, isCompleted: !task.isCompleted}:
+                task
+        }))
+    })
 
     return (
-        <div>
-            <h1>Tasks</h1>
-            <div>
-                <div style={{margin: '10px auto'}}>
-                    {
-                        tasks.map(task => (
+        <div className="tasks-list">
+            {tasks.length === 0 && <p className="task-empty">No tasks here yet.</p>}
 
-                            task.isCompleted ?
-                                (
-                                    <div key={task.id} style={{ border: '1px solid green', margin: '10px auto'}}>
-                                        <p style={{textDecoration: 'line-through'}}>{task.title}</p>
-                                        <button disabled>Completed</button>
-                                    </div>
-                                ) :
-                                (
-                                    <div key={task.id} style={{ border: '1px solid black', margin: '10px auto' }}>
-                                        <p>{task.title}</p>
-                                        <button onClick={() => handleComplete(task.id)}>Completed</button>
-                                    </div>
-                                )
-                        ))
-                    }
+            {tasks.map(task => (
+                <div
+                    key={task.id}
+                    className={`task-card ${task.isCompleted ? 'task-completed' : 'task-pending'}`}
+                >
+                    <p className="task-title">{task.title}</p>
+
+                    <div className="task-controls">
+                        {task.isCompleted ? (
+                            <button className="btn btn-success" onClick={() => handleNotCompleted(task.id)}>Mark Pending</button>
+                        ) : (
+                            <button className="btn btn-success" onClick={() => handleComplete(task.id)}>Mark Completed</button>
+                        )}
+
+                        <button className="btn btn-danger" onClick={() => handleDelete(task.id)}>Delete</button>
+                    </div>
                 </div>
-            </div>
+            ))}
         </div>
     )
 }
 
-export default Tasks
+export default React.memo(Tasks)
